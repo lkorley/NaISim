@@ -44,6 +44,7 @@ set(rdecay02_SCRIPTS
     plotHisto.C
     rdecay02.in
     vis.mac
+    gui.mac
   )
 
 foreach(_script ${rdecay02_SCRIPTS})
