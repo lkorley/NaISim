@@ -10,7 +10,7 @@
 #/rdecay02/det/setTargetMate G4_SODIUM_IODIDE
 #/rdecay02/det/setTargetRadius 12.7 cm
 #/rdecay02/det/setTargetLength 12.7 cm
-/rdecay02/det/setDetectorMate G4_Al
+#/rdecay02/det/setDetectorMate G4_Al
 #/rdecay02/det/setDetectorThickness 3.65 cm
 #/rdecay02/det/setDetectorLength 20 cm
 #
@@ -25,18 +25,18 @@
 # place the isotopes in the middle of the target, at rest. 
 /gun/particle ion
 /gun/ion 27 60
-/gun/position 0. 0. -27.62 cm
+/gun/position 0. 0. -20. cm
 #
 # complete chain decays
 /analysis/setFileName co60
 /analysis/h1/setActivationToAll true
-/analysis/h1/set 0 1025 0. 3200 keV
-/analysis/h1/set 1 1025 0. 3200 keV
-/analysis/h1/set 2 1025 0. 3200 keV
-/analysis/h1/set 3 1025 0. 3200 keV
-/analysis/h1/set 4 1025 0. 3200 keV
-/analysis/h1/set 5 1025 0. 3200 keV
-/analysis/h1/set 6 1025 0. 3200 keV
+/analysis/h1/set 0 1025 0. 3050 keV
+/analysis/h1/set 1 1025 0. 3050 keV
+/analysis/h1/set 2 1025 0. 3050 keV
+/analysis/h1/set 3 1025 0. 3050 keV
+/analysis/h1/set 4 1025 0. 3050 keV
+/analysis/h1/set 5 1025 0. 3050 keV
+/analysis/h1/set 6 1025 0. 3050 keV
 #
 /grdm/applyICM false
 /grdm/applyARM false
@@ -44,4 +44,4 @@
 /grdm/hlThreshold 1e-6 s
 #
 /tracking/verbose 2
-/run/beamOn 10000
+/run/beamOn 30000

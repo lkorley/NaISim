@@ -39,6 +39,7 @@
 #include "EmStandardPhysics.hh"
 #include "G4DecayPhysics.hh"
 #include "G4RadioactiveDecayPhysics.hh"
+#include "G4EmLowEPPhysics.hh"
 
 #include "G4HadronElasticPhysicsHP.hh"
 #include "G4HadronPhysicsFTFP_BERT_HP.hh"
@@ -82,7 +83,7 @@ PhysicsList::PhysicsList()
   new G4UnitDefinition("year",   "y",   "Time", year);
           
   // EM physics
-  RegisterPhysics(new EmStandardPhysics());
+  RegisterPhysics(new G4EmLowEPPhysics());
   
   // Decay
   RegisterPhysics(new G4DecayPhysics());

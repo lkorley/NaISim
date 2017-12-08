@@ -215,7 +215,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
                              ->GetVolume()->GetLogicalVolume();
   G4int iVol = 0;
   if (lVolume == fDetector->GetLogicTarget())   iVol = 1;
-  if (lVolume == fDetector->GetLogicDetector()) iVol = 2;
+  if (lVolume == fDetector->GetLogicDetector() || lVolume == fDetector->GetLogicDetectorFace()) iVol = 2;
 
   // count processes
   // 

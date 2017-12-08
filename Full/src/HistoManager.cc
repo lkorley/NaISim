@@ -104,7 +104,14 @@ void HistoManager::Book()
   id = analysis->CreateH1("H16","Decay emission spectrum (MeV)",
                  nbins, vmin, vmax);
   analysis->SetH1Activation(id, false);  
-    
+
+  id = analysis->CreateH1("H17","Scintilation Photons Created in target",
+                  nbins,vmin,vmax);
+  analysis->SetH1Activation(id,false);
+  
+  id = analysis->CreateH1("H18","Scintilation Photons incident at PMT",
+                  nbins,vmin,vmax);
+  analysis->SetH1Activation(id,false);
   // nTuples
   //
   ////analysis->SetNtupleDirectoryName("ntuple");

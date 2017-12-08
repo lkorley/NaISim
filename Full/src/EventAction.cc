@@ -57,7 +57,8 @@
 EventAction::EventAction()
 :G4UserEventAction(),
  fEdep1(0.), fEdep2(0.), fWeight1(0.), fWeight2(0.),
- fTime0(-1*s)
+ fTime0(-1*s),fScintCollID(-1),fPMTCollID(-1),fVerbose(1),
+   fPMTThreshold(1),fForcedrawphotons(false),fForcenophotons(false)
 { } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -147,9 +148,13 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
 
  UserEventInformation* eventInformation
     =(UserEventInformation*)anEvent->GetUserInformation();
- 
+ G4int pmthitcount = 0;
+ G4int scintcount = eventInformation->GetPhotonCount_Scint();
+
+ analysisManager->FillH1(7, scintcount, fWeight1);
   G4TrajectoryContainer* trajectoryContainer=anEvent->GetTrajectoryContainer();
  
+
   G4int n_trajectories = 0;
   if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
 
@@ -214,9 +219,11 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
   if(pmtHC){
     G4ThreeVector reconPos(0.,0.,0.);
     G4int pmts=pmtHC->entries();
+    
     //Gather info from all PMTs
     for(G4int i=0;i<pmts;i++){
       eventInformation->IncHitCount((*pmtHC)[i]->GetPhotonCount());
+      pmthitcount+=(*pmtHC)[i]->GetPhotonCount();
       reconPos+=(*pmtHC)[i]->GetPMTPos()*(*pmtHC)[i]->GetPhotonCount();
       if((*pmtHC)[i]->GetPhotonCount()>=fPMTThreshold){
         eventInformation->IncPMTSAboveThreshold();
@@ -225,6 +232,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
         (*pmtHC)[i]->SetDrawit(false);
       }
     }
+    analysisManager->FillH1(8, pmthitcount, fWeight1);
  
     if(eventInformation->GetHitCount()>0){//dont bother unless there were hits
       reconPos/=eventInformation->GetHitCount();

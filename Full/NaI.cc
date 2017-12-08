@@ -44,6 +44,7 @@
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
+#include "TrackingAction.hh"
 #include "SteppingVerbose.hh"
 
 #ifdef G4VIS_USE

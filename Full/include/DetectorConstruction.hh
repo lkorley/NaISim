@@ -78,11 +78,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4double GetTargetRadius();
     G4Material* GetTargetMaterial();       
     G4LogicalVolume* GetLogicTarget();
+    G4LogicalVolume* GetLogicPMT();
+    G4LogicalVolume* GetLogicPhotocath();
     
     G4double GetDetectorLength();
     G4double GetDetectorThickness();
     G4Material* GetDetectorMaterial();                 
-    G4LogicalVolume* GetLogicDetector();      
+    G4LogicalVolume* GetLogicDetector();
+    G4LogicalVolume* GetLogicDetectorFace();       
                        
   private:
   
@@ -93,8 +96,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
                  
     G4double           fDetectorLength;
     G4double           fDetectorThickness;
+    G4double           fDetFaceLength;
     G4Material*        fDetectorMater;
     G4LogicalVolume*   fLogicDetector;
+    G4LogicalVolume*   fLogicDetectorFace;
                
     G4double           fWorldLength;
     G4double           fWorldRadius;

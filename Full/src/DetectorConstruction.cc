@@ -84,7 +84,7 @@ DetectorConstruction::DetectorConstruction()
   fTargetRadius      = 6.35*cm;
   fDetectorLength    = 20*cm; 
   fDetectorThickness = 3.175*cm;
-  fD_mtl             = 7.62*cm;
+  fD_mtl             = 6*cm;
   
   fWorldLength = std::max(std::max(fTargetLength,fDetectorLength),400*cm);
   //fWorldRadius = std::max(fTargetRadius + fDetectorThickness,400*cm);
@@ -192,6 +192,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
   // (re) compute World dimensions if necessary
   //fWorldLength = std::max(fTargetLength,fDetectorLength);
   fWorldRadius = fTargetRadius + fDetectorThickness;
+  fDetFaceLength = 0.5*(fDetectorLength-fTargetLength);
 
   G4Box*
   sWorld = new G4Box("World",                                 //name
@@ -247,7 +248,23 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
                            lWorld,                      //mother  volume
                            false,                       //no boolean operation
                            0);                          //copy number
+  //Detector Face
+  //
+  G4Tubs*
+    sDetectorFace = new G4Tubs("DetectorFace",
+                      0., fTargetRadius, 0.5*fDetFaceLength, 0.,twopi);
 
+  fLogicDetectorFace = new G4LogicalVolume(sDetectorFace,
+                              fDetectorMater,
+                              "DetectorFace");
+
+              new G4PVPlacement(0,
+                                G4ThreeVector(0,0,0.5*(fDetFaceLength+fTargetLength)),
+                                fLogicDetectorFace,
+                                "DetectorFace",
+                                lWorld,
+                                false,
+                                0);
 
   //Build PMT
   //
@@ -274,7 +291,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
                                        "photocath_log");
  
   new G4PVPlacement(0,
-                  G4ThreeVector(0,0,(fTargetLength +height_pmt)/2.),
+                  G4ThreeVector(0,0,-(fTargetLength +height_pmt)/2.),
                   fPhotocath_log,"photocath",
                   fPmt_log,
                   false,
@@ -328,6 +345,7 @@ void DetectorConstruction::SurfaceProperties(){
   //**Create logical skin surfaces
   new G4LogicalSkinSurface("housing_surf",fLogicDetector,
                            OpScintHousingSurface);
+  new G4LogicalSkinSurface("housing_face_surf",fLogicDetectorFace,OpScintHousingSurface);
   new G4LogicalSkinSurface("photocath_surf",fPhotocath_log,photocath_opsurf);
 }
 
@@ -485,6 +503,21 @@ G4LogicalVolume* DetectorConstruction::GetLogicTarget()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+G4LogicalVolume* DetectorConstruction::GetLogicPMT()
+{
+  return fPmt_log;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4LogicalVolume* DetectorConstruction::GetLogicPhotocath()
+{
+  return fPhotocath_log;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 G4double DetectorConstruction::GetDetectorLength()
 {
   return fDetectorLength;
@@ -509,6 +542,11 @@ G4Material* DetectorConstruction::GetDetectorMaterial()
 G4LogicalVolume* DetectorConstruction::GetLogicDetector()
 {
   return fLogicDetector;
+}
+
+G4LogicalVolume* DetectorConstruction::GetLogicDetectorFace()
+{
+  return fLogicDetectorFace;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
