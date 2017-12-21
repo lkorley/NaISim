@@ -145,9 +145,9 @@ void DetectorConstruction::DefineMaterials()
   fTargetMater = NaITl;
 
   //Glass
-  fGlass = new G4Material("Glass", 1.032*g/cm3,2);
-  fGlass->AddElement(C,91.533*perCent);
-  fGlass->AddElement(H,8.467*perCent);
+  fGlass = new G4Material("Quartz", 2.648*g/cm3,2);
+  fGlass->AddElement(Si,(100.0/3.0)*perCent);
+  fGlass->AddElement(O,(200.0/3.0)*perCent);
 
   //material preperties tables
   G4double nai_Energy[] = {2.48*eV,3.87*eV};
@@ -163,9 +163,9 @@ void DetectorConstruction::DefineMaterials()
   fTargetMater->GetIonisation()->SetBirksConstant(0.91*mm/MeV);
   fTarget_mt = fNaI_mt;
 
-  G4double glass_RIND[]={1.49,1.49};
+  G4double glass_RIND[]={1.55,1.57};
   assert(sizeof(glass_RIND) == sizeof(nai_Energy));
-  G4double glass_AbsLength[]={420.*cm,420.*cm};
+  G4double glass_AbsLength[]={50*cm,12.5*cm};
   assert(sizeof(glass_AbsLength) == sizeof(nai_Energy));
   G4MaterialPropertiesTable *glass_mt = new G4MaterialPropertiesTable();
   glass_mt->AddProperty("ABSLENGTH",nai_Energy,glass_AbsLength,2);
