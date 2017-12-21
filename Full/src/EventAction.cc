@@ -152,6 +152,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
  G4int scintcount = eventInformation->GetPhotonCount_Scint();
 
  analysisManager->FillH1(7, scintcount, fWeight1);
+ analysisManager->FillH1(9, scintcount/fEdep1, fWeight1);
   G4TrajectoryContainer* trajectoryContainer=anEvent->GetTrajectoryContainer();
  
 

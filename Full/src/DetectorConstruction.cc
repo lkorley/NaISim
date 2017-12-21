@@ -57,6 +57,7 @@
 #include "G4PhysicalConstants.hh"
 #include "G4UnitsTable.hh"
 
+#include "G4VisAttributes.hh"
 
 #include "PMTSD.hh"
 #include "ScintSD.hh"
@@ -81,10 +82,10 @@ DetectorConstruction::DetectorConstruction()
  fDetectorMessenger(0)
 {
   fTargetLength      = 12.7*cm; 
-  fTargetRadius      = 6.35*cm;
-  fDetectorLength    = 20*cm; 
-  fDetectorThickness = 3.175*cm;
-  fD_mtl             = 6*cm;
+  fTargetRadius      = fTargetLength/2.0;
+  fDetectorLength    = (12.7+ 0.02*2.54)*cm; //12.75cm
+  fDetectorThickness = 0.02*2.54*cm;
+  fD_mtl             = 2*mm;
   
   fWorldLength = std::max(std::max(fTargetLength,fDetectorLength),400*cm);
   //fWorldRadius = std::max(fTargetRadius + fDetectorThickness,400*cm);
@@ -151,9 +152,13 @@ void DetectorConstruction::DefineMaterials()
   //material preperties tables
   G4double nai_Energy[] = {2.48*eV,3.87*eV};
   G4double nai_RIND[] = { 1.85, 1.85 };
+  G4double nai_Scint[] = {1.0,1.0};
   G4MaterialPropertiesTable* fNaI_mt = new G4MaterialPropertiesTable();
   fNaI_mt->AddProperty("RINDEX",nai_Energy,nai_RIND,2);
-  fNaI_mt->AddConstProperty("SCINTILLATIONYIELD",43000./MeV);
+  fNaI_mt->AddProperty("FASTCOMPONENT",nai_Energy,nai_Scint,2);
+  fNaI_mt->AddConstProperty("FASTTIMECONSTANT",250.*ns);
+  fNaI_mt->AddConstProperty("SCINTILLATIONYIELD",38./keV);
+  fNaI_mt->AddConstProperty("RESOLUTIONSCALE",1.0);
   fTargetMater->SetMaterialPropertiesTable(fNaI_mt);
   fTargetMater->GetIonisation()->SetBirksConstant(0.91*mm/MeV);
   fTarget_mt = fNaI_mt;
@@ -230,6 +235,11 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
                            false,                       //no boolean operation
                            0);                          //copy number
 
+  G4VisAttributes* targetVisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+  targetVisAtt->SetVisibility(true);
+  targetVisAtt->SetForceWireframe(false);
+  fLogicTarget->SetVisAttributes(targetVisAtt);
+
   // Detector
   //
   G4Tubs* 
@@ -248,6 +258,11 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
                            lWorld,                      //mother  volume
                            false,                       //no boolean operation
                            0);                          //copy number
+
+  G4VisAttributes* detVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0));
+  detVisAtt->SetVisibility(true);
+  detVisAtt->SetForceWireframe(true);
+  fLogicDetector->SetVisAttributes(detVisAtt);
   //Detector Face
   //
   G4Tubs*
@@ -266,6 +281,11 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
                                 false,
                                 0);
 
+  G4VisAttributes* detFaceVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0));
+  detFaceVisAtt->SetVisibility(true);
+  detFaceVisAtt->SetForceWireframe(false);
+  fLogicDetectorFace->SetVisAttributes(detFaceVisAtt);
+
   //Build PMT
   //
   G4double innerRadius_pmt = 0.*cm;
@@ -276,7 +296,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
   G4NistManager* man = G4NistManager::Instance();
  
   G4Tubs* fPmt = new G4Tubs("pmt_tube",innerRadius_pmt,fTargetRadius,
-                    height_pmt/2.,startAngle_pmt,spanningAngle_pmt);
+                    height_pmt,startAngle_pmt,spanningAngle_pmt);
  
   //the "photocathode" is a metal slab at the back of the glass that
   //is only a very rough approximation of the real thing since it only
@@ -284,19 +304,36 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
   G4Tubs* fPhotocath = new G4Tubs("photocath_tube",innerRadius_pmt,fTargetRadius,
                           height_pmt/2,startAngle_pmt,spanningAngle_pmt);
  
-  fPmt_log = new G4LogicalVolume(fPmt,G4Material::GetMaterial("Glass"),
+  fPmt_log = new G4LogicalVolume(fPmt,fGlass,
                                  "pmt_log");
   fPhotocath_log = new G4LogicalVolume(fPhotocath,
-                                       man->FindOrBuildMaterial("G4_Al"),
+                                       fGlass,
                                        "photocath_log");
  
   new G4PVPlacement(0,
-                  G4ThreeVector(0,0,-(fTargetLength +height_pmt)/2.),
+                  G4ThreeVector(0,0,-(height_pmt)/2.),
                   fPhotocath_log,"photocath",
                   fPmt_log,
                   false,
                   0);
 
+
+  G4VisAttributes* photcathVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,0.0));
+  photcathVisAtt->SetVisibility(true);
+  photcathVisAtt->SetForceWireframe(false);
+  fPhotocath_log->SetVisAttributes(photcathVisAtt);
+
+  new G4PVPlacement(0,
+  					G4ThreeVector(0,0,-fTargetLength/2.0 -height_pmt),
+  					fPmt_log,"pmt",
+  					lWorld,
+  					false,
+  					0);
+
+  G4VisAttributes* pmtVisAtt= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+  pmtVisAtt->SetVisibility(true);
+  pmtVisAtt->SetForceWireframe(false);
+  fPmt_log->SetVisAttributes(pmtVisAtt);
 
   SurfaceProperties();
 
@@ -364,7 +401,7 @@ void DetectorConstruction::ConstructSDandField() {
 
     pmt_SD->InitPMTs(1); //let pmtSD know # of pmts
     std::vector<G4ThreeVector> pmt_pos;
-    pmt_pos.push_back(G4ThreeVector(0,0,(fTargetLength +fD_mtl/2.)/2.));
+    pmt_pos.push_back(G4ThreeVector(0,0,-(fTargetLength +fD_mtl/2.)/2.));
     pmt_SD->SetPmtPositions(pmt_pos);
   }
   G4SDManager::GetSDMpointer()->AddNewDetector(fPmt_SD.Get());

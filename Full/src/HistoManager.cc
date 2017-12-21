@@ -112,6 +112,10 @@ void HistoManager::Book()
   id = analysis->CreateH1("H18","Scintilation Photons incident at PMT",
                   nbins,vmin,vmax);
   analysis->SetH1Activation(id,false);
+
+  id = analysis->CreateH1("H19","Scintilation Photons per keV depposited",
+                  nbins,vmin,vmax);
+  analysis->SetH1Activation(id,false);
   // nTuples
   //
   ////analysis->SetNtupleDirectoryName("ntuple");

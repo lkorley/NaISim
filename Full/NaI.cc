@@ -99,7 +99,7 @@ int main(int argc,char** argv) {
       G4UIExecutive * ui = new G4UIExecutive(argc,argv);      
 #ifdef G4VIS_USE
       G4VisManager* visManager = new G4VisExecutive;
-      //visManager->Initialize();
+      visManager->Initialize();
 #endif    
     if (ui->IsGUI())
        UI->ApplyCommand("/control/execute gui.mac");

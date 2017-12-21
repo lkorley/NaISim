@@ -41,6 +41,7 @@
 
 class DetectorConstruction;
 class EventAction;
+class TrackingAction;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

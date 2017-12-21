@@ -66,7 +66,9 @@
 
 SteppingAction::SteppingAction(DetectorConstruction* det, EventAction* event)
 : G4UserSteppingAction(), fDetector(det), fEventAction(event)
-{ }
+{
+  fExpectedNextStatus = Undefined;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -160,6 +162,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     //Prior to Geant4.6.0-p1 this would not have been enough to check
     if(thePostPoint->GetStepStatus()==fGeomBoundary){
       if(fExpectedNextStatus==StepTooSmall){
+       // G4cout << thePostPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName() << " / " << thePrePoint->GetPhysicalVolume()->GetLogicalVolume()->GetName() << " :: Expect " << fExpectedNextStatus << ", get " << boundaryStatus << G4endl;
         if(boundaryStatus!=StepTooSmall){
           G4ExceptionDescription ed;
           ed << "SteppingAction::UserSteppingAction(): "

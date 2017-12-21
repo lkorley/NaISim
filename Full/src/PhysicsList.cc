@@ -74,7 +74,8 @@ PhysicsList::PhysicsList()
   
   //add new units for radioActive decays
   //
-  new G4UnitDefinition( "millielectronVolt", "meV", "Energy", 1.e-3*eV);   
+  new G4UnitDefinition( "millielectronVolt", "meV", "Energy", 1.e-3*eV);
+  new G4UnitDefinition( "inversekiloelectronVolt", "1/keV", "inverse Energy", 1/keV);
   // 
   const G4double minute = 60*second;
   const G4double hour   = 60*minute;
@@ -87,7 +88,7 @@ PhysicsList::PhysicsList()
           
   // EM physics
   //RegisterPhysics(new EmStandardPhysics());
-  RegisterPhysics(new G4EmLowEPPhysics());
+  RegisterPhysics(new EmStandardPhysics());
   
   // Decay
   RegisterPhysics(new G4DecayPhysics());
@@ -124,7 +125,7 @@ PhysicsList::PhysicsList()
   opticalPhysics->SetMaxNumPhotonsPerStep(100);
   opticalPhysics->SetMaxBetaChangePerStep(10.0);
 
-  opticalPhysics->SetTrackSecondariesFirst(kCerenkov,true);
+  //opticalPhysics->SetTrackSecondariesFirst(kCerenkov,true);
   opticalPhysics->SetTrackSecondariesFirst(kScintillation,true);
 
 }
