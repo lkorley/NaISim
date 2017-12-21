@@ -85,7 +85,7 @@ DetectorConstruction::DetectorConstruction()
   fTargetRadius      = fTargetLength/2.0;
   fDetectorLength    = (12.7+ 0.02*2.54)*cm; //12.75cm
   fDetectorThickness = 0.02*2.54*cm;
-  fD_mtl             = 2*mm;
+  fD_mtl             = fDetectorThickness;
   
   fWorldLength = std::max(std::max(fTargetLength,fDetectorLength),400*cm);
   //fWorldRadius = std::max(fTargetRadius + fDetectorThickness,400*cm);
