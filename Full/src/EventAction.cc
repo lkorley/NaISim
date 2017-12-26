@@ -103,6 +103,10 @@ void EventAction::AddEdep(G4int iVol, G4double edep,
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 {
+ G4int eID=anEvent->GetEventID();
+ if(fVerbose>0)
+ 	G4cout << "Event: " << eID << G4endl;
+
  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
  
  G4double Etot = fEdep1 + fEdep2;

@@ -83,8 +83,8 @@ DetectorConstruction::DetectorConstruction()
 {
   fTargetLength      = 12.7*cm; 
   fTargetRadius      = fTargetLength/2.0;
-  fDetectorLength    = (12.7+ 0.02*2.54)*cm; //12.75cm
-  fDetectorThickness = 0.02*2.54*cm;
+  fDetectorLength    = (12.7+ 0.2*2.54)*cm; //12.75cm
+  fDetectorThickness = 0.2*2.54*cm;
   fD_mtl             = fDetectorThickness;
   
   fWorldLength = std::max(std::max(fTargetLength,fDetectorLength),400*cm);
@@ -157,7 +157,7 @@ void DetectorConstruction::DefineMaterials()
   fNaI_mt->AddProperty("RINDEX",nai_Energy,nai_RIND,2);
   fNaI_mt->AddProperty("FASTCOMPONENT",nai_Energy,nai_Scint,2);
   fNaI_mt->AddConstProperty("FASTTIMECONSTANT",250.*ns);
-  fNaI_mt->AddConstProperty("SCINTILLATIONYIELD",38./keV);
+  fNaI_mt->AddConstProperty("SCINTILLATIONYIELD",44./keV);
   fNaI_mt->AddConstProperty("RESOLUTIONSCALE",1.0);
   fTargetMater->SetMaterialPropertiesTable(fNaI_mt);
   fTargetMater->GetIonisation()->SetBirksConstant(0.91*mm/MeV);
@@ -307,7 +307,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolumes()
   fPmt_log = new G4LogicalVolume(fPmt,fGlass,
                                  "pmt_log");
   fPhotocath_log = new G4LogicalVolume(fPhotocath,
-                                       fGlass,
+                                       man->FindOrBuildMaterial("G4_Al"),
                                        "photocath_log");
  
   new G4PVPlacement(0,
