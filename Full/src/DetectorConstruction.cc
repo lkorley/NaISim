@@ -158,7 +158,7 @@ void DetectorConstruction::DefineMaterials()
   fNaI_mt->AddProperty("FASTCOMPONENT",nai_Energy,nai_Scint,2);
   fNaI_mt->AddConstProperty("FASTTIMECONSTANT",250.*ns);
   fNaI_mt->AddConstProperty("SCINTILLATIONYIELD",44./keV);
-  fNaI_mt->AddConstProperty("RESOLUTIONSCALE",1.0);
+  fNaI_mt->AddConstProperty("RESOLUTIONSCALE",0);
   fTargetMater->SetMaterialPropertiesTable(fNaI_mt);
   fTargetMater->GetIonisation()->SetBirksConstant(0.91*mm/MeV);
   fTarget_mt = fNaI_mt;
